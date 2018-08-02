@@ -11,7 +11,7 @@ info:
 security:
   - basic: []
 paths:
-  '/betrokkenen/{id}':
+  '/betrokkenen/{uuid}':
     get:
       operationId: organisatorischeeenheid_read
       description: ''
@@ -25,18 +25,32 @@ paths:
       tags:
         - betrokkenen
     parameters:
-      - name: id
+      - name: uuid
         in: path
-        description: A unique integer value identifying this Organisatorische eenheid.
+        description: Unieke resource identifier (UUID4)
         required: true
         schema:
-          type: integer
+          type: string
+          format: uuid
   /klantcontacten:
+    get:
+      operationId: klantcontact_list
+      description: Geef een lijst van KLANTCONTACTen.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KlantContact'
+      tags:
+        - klantcontacten
     post:
       operationId: klantcontact_create
-      description: >-
+      description: |-
         Registreer een klantcontact bij een ZAAK.
-
 
         Indien geen identificatie gegeven is, dan wordt deze automatisch
         gegenereerd.
@@ -56,10 +70,10 @@ paths:
               $ref: '#/components/schemas/KlantContact'
         required: true
     parameters: []
-  '/klantcontacten/{id}':
+  '/klantcontacten/{uuid}':
     get:
       operationId: klantcontact_read
-      description: Geef de details van een klantcontact voor een ZAAK.
+      description: Opvragen en bewerken van KLANTCONTACTen.
       responses:
         '200':
           description: ''
@@ -70,13 +84,28 @@ paths:
       tags:
         - klantcontacten
     parameters:
-      - name: id
+      - name: uuid
         in: path
-        description: A unique integer value identifying this klantcontact.
+        description: Unieke resource identifier (UUID4)
         required: true
         schema:
-          type: integer
+          type: string
+          format: uuid
   /rollen:
+    get:
+      operationId: rol_list
+      description: Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rol'
+      tags:
+        - rollen
     post:
       operationId: rol_create
       description: Koppel een BETROKKENE aan een ZAAK.
@@ -96,10 +125,10 @@ paths:
               $ref: '#/components/schemas/Rol'
         required: true
     parameters: []
-  '/rollen/{id}':
+  '/rollen/{uuid}':
     get:
       operationId: rol_read
-      description: ''
+      description: Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
       responses:
         '200':
           description: ''
@@ -110,13 +139,28 @@ paths:
       tags:
         - rollen
     parameters:
-      - name: id
+      - name: uuid
         in: path
-        description: A unique integer value identifying this Rol.
+        description: Unieke resource identifier (UUID4)
         required: true
         schema:
-          type: integer
+          type: string
+          format: uuid
   /statussen:
+    get:
+      operationId: status_list
+      description: ''
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Status'
+      tags:
+        - statussen
     post:
       operationId: status_create
       description: ''
@@ -136,7 +180,7 @@ paths:
               $ref: '#/components/schemas/Status'
         required: true
     parameters: []
-  '/statussen/{id}':
+  '/statussen/{uuid}':
     get:
       operationId: status_read
       description: ''
@@ -150,13 +194,28 @@ paths:
       tags:
         - statussen
     parameters:
-      - name: id
+      - name: uuid
         in: path
-        description: A unique integer value identifying this status.
+        description: Unieke resource identifier (UUID4)
         required: true
         schema:
-          type: integer
+          type: string
+          format: uuid
   /zaakobjecten:
+    get:
+      operationId: zaakobject_list
+      description: Geef een lijst van ZAAKOBJECTrelaties terug.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ZaakObject'
+      tags:
+        - zaakobjecten
     post:
       operationId: zaakobject_create
       description: Registreer een ZAAKOBJECT relatie.
@@ -176,7 +235,7 @@ paths:
               $ref: '#/components/schemas/ZaakObject'
         required: true
     parameters: []
-  '/zaakobjecten/{id}':
+  '/zaakobjecten/{uuid}':
     get:
       operationId: zaakobject_read
       description: Geef de details van een ZAAKOBJECT relatie.
@@ -190,21 +249,87 @@ paths:
       tags:
         - zaakobjecten
     parameters:
-      - name: id
+      - name: uuid
         in: path
-        description: A unique integer value identifying this zaakobject.
+        description: Unieke resource identifier (UUID4)
         required: true
         schema:
-          type: integer
+          type: string
+          format: uuid
   /zaken:
+    get:
+      operationId: zaak_list
+      description: Geef een lijst van ZAAKen.
+      parameters:
+        - name: zaakidentificatie
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: bronorganisatie
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: zaaktype
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: Accept-Crs
+          in: header
+          description: >-
+            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
+            WGS84).
+          required: true
+          schema:
+            type: string
+            enum:
+              - 'EPSG:4326'
+      responses:
+        '200':
+          description: ''
+          headers:
+            Content-Crs:
+              description: >-
+                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
+                hetzelfde als WGS84).
+              schema:
+                type: string
+                enum:
+                  - 'EPSG:4326'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zaak'
+      tags:
+        - zaken
     post:
       operationId: zaak_create
-      description: >-
+      description: |-
         Maak een ZAAK aan.
-
 
         Indien geen zaakidentificatie gegeven is, dan wordt deze automatisch
         gegenereerd.
+      parameters:
+        - name: Accept-Crs
+          in: header
+          description: >-
+            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
+            WGS84).
+          required: true
+          schema:
+            type: string
+            enum:
+              - 'EPSG:4326'
       responses:
         '201':
           description: ''
@@ -221,13 +346,79 @@ paths:
               $ref: '#/components/schemas/Zaak'
         required: true
     parameters: []
-  '/zaken/{id}':
-    get:
-      operationId: zaak_read
-      description: Opvragen en bewerken van ZAAKen.
+  /zaken/_zoek:
+    post:
+      operationId: zaak__zoek
+      description: Voer een (geo)-zoekopdracht uit op ZAAKen.
+      parameters:
+        - name: Accept-Crs
+          in: header
+          description: >-
+            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
+            WGS84).
+          required: true
+          schema:
+            type: string
+            enum:
+              - 'EPSG:4326'
       responses:
         '200':
           description: ''
+          headers:
+            Content-Crs:
+              description: >-
+                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
+                hetzelfde als WGS84).
+              schema:
+                type: string
+                enum:
+                  - 'EPSG:4326'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zaak'
+      tags:
+        - zaken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZaakZoek'
+        required: true
+    parameters: []
+  '/zaken/{uuid}':
+    get:
+      operationId: zaak_read
+      description: Opvragen en bewerken van ZAAKen.
+      parameters:
+        - name: Accept-Crs
+          in: header
+          description: >-
+            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
+            WGS84).
+          required: true
+          schema:
+            type: string
+            enum:
+              - 'EPSG:4326'
+      responses:
+        '200':
+          description: ''
+          headers:
+            Content-Crs:
+              description: >-
+                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
+                hetzelfde als WGS84).
+              schema:
+                type: string
+                enum:
+                  - 'EPSG:4326'
           content:
             application/json:
               schema:
@@ -235,13 +426,14 @@ paths:
       tags:
         - zaken
     parameters:
-      - name: id
+      - name: uuid
         in: path
-        description: A unique integer value identifying this zaak.
+        description: Unieke resource identifier (UUID4)
         required: true
         schema:
-          type: integer
-  '/zaken/{zaak_pk}/zaakeigenschappen':
+          type: string
+          format: uuid
+  '/zaken/{zaak_uuid}/zaakeigenschappen':
     get:
       operationId: zaakeigenschap_list
       description: Geef een collectie van eigenschappen behorend bij een ZAAK.
@@ -275,12 +467,14 @@ paths:
               $ref: '#/components/schemas/ZaakEigenschap'
         required: true
     parameters:
-      - name: zaak_pk
+      - name: zaak_uuid
         in: path
         required: true
+        description: Unieke resource identifier (UUID4)
         schema:
           type: string
-  '/zaken/{zaak_pk}/zaakeigenschappen/{id}':
+          format: uuid
+  '/zaken/{zaak_uuid}/zaakeigenschappen/{uuid}':
     get:
       operationId: zaakeigenschap_read
       description: Geef de details van ZaakEigenschap voor een ZAAK.
@@ -294,17 +488,20 @@ paths:
       tags:
         - zaken
     parameters:
-      - name: id
+      - name: uuid
         in: path
-        description: A unique integer value identifying this zaakeigenschap.
-        required: true
-        schema:
-          type: integer
-      - name: zaak_pk
-        in: path
+        description: Unieke resource identifier (UUID4)
         required: true
         schema:
           type: string
+          format: uuid
+      - name: zaak_uuid
+        in: path
+        required: true
+        description: Unieke resource identifier (UUID4)
+        schema:
+          type: string
+          format: uuid
 servers:
   - url: /api/v1
 components:
@@ -495,6 +692,161 @@ components:
           description: Omschrijving van de betrekking tussen de ZAAK en het OBJECT.
           type: string
           maxLength: 80
+    Geometry:
+      title: Geometry
+      description: GeoJSON geometry
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          description: The geometry type
+          type: string
+          enum:
+            - Point
+            - MultiPoint
+            - LineString
+            - MultiLineString
+            - Polygon
+            - MultiPolygon
+            - Feature
+            - FeatureCollection
+            - GeometryCollection
+      discriminator:
+        propertyName: type
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3.1'
+    Point2D:
+      title: Point2D
+      description: A 2D point
+      type: array
+      items:
+        type: number
+      maxItems: 2
+      minItems: 2
+    Point:
+      description: GeoJSON point geometry
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Geometry'
+        - required:
+            - coordinates
+          type: object
+          properties:
+            coordinates:
+              $ref: '#/components/schemas/Point2D'
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.2'
+    MultiPoint:
+      description: GeoJSON multi-point geometry
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Geometry'
+        - required:
+            - coordinates
+          type: object
+          properties:
+            coordinates:
+              type: array
+              items:
+                $ref: '#/components/schemas/Point2D'
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.3'
+    LineString:
+      description: GeoJSON line-string geometry
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Geometry'
+        - required:
+            - coordinates
+          type: object
+          properties:
+            coordinates:
+              type: array
+              items:
+                $ref: '#/components/schemas/Point2D'
+              minItems: 2
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.4'
+    MultiLineString:
+      description: GeoJSON multi-line-string geometry
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Geometry'
+        - required:
+            - coordinates
+          type: object
+          properties:
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Point2D'
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.5'
+    Polygon:
+      description: GeoJSON polygon geometry
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Geometry'
+        - required:
+            - coordinates
+          type: object
+          properties:
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Point2D'
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.6'
+    MultiPolygon:
+      description: GeoJSON multi-polygon geometry
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Geometry'
+        - required:
+            - coordinates
+          type: object
+          properties:
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Point2D'
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.7'
+    GeometryCollection:
+      description: GeoJSON multi-polygon geometry
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Geometry'
+        - required:
+            - geometries
+          type: object
+          properties:
+            geometries:
+              type: array
+              items:
+                $ref: '#/components/schemas/Geometry'
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.8'
+    GeoJSONGeometry:
+      title: GeoJSONGeometry
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/Point'
+        - $ref: '#/components/schemas/MultiPoint'
+        - $ref: '#/components/schemas/LineString'
+        - $ref: '#/components/schemas/MultiLineString'
+        - $ref: '#/components/schemas/Polygon'
+        - $ref: '#/components/schemas/MultiPolygon'
+        - $ref: '#/components/schemas/GeometryCollection'
     Zaak:
       required:
         - bronorganisatie
@@ -542,15 +894,38 @@ components:
           type: string
           maxLength: 1000
         zaakgeometrie:
-          title: Zaakgeometrie
-          description: 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
-          type: object
+          $ref: '#/components/schemas/GeoJSONGeometry'
         status:
           title: Status
           description: 'Indien geen status bekend is, dan is de waarde ''null'''
           type: string
           format: uri
           readOnly: true
+    GeoWithin:
+      title: Zaakgeometrie
+      type: object
+      properties:
+        within:
+          $ref: '#/components/schemas/GeoJSONGeometry'
+    ZaakZoek:
+      required:
+        - zaakgeometrie
+      type: object
+      properties:
+        zaakgeometrie:
+          $ref: '#/components/schemas/GeoWithin'
+        zaakidentificatie:
+          title: Zaakidentificatie
+          type: string
+          minLength: 1
+        bronorganisatie:
+          title: Bronorganisatie
+          type: string
+          minLength: 1
+        zaaktype:
+          title: Zaaktype
+          type: string
+          minLength: 1
     ZaakEigenschap:
       required:
         - zaak
