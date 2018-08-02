@@ -32,22 +32,22 @@ Inspecteurs – bijvoorbeeld t.a.v. bouwvergunningen – lopen door wijken en ov
 
 Hieronder een voorbeeld op een 3d kaart (de pop up laat nu andere gegevens zien).
 
-![3drotterdam.png](https://github.com/VNG-Realisatie/gemma-zaken/docs/processen/bestanden/rotterdam/3drotterdam.png)
+![3drotterdam.png](./bestanden/rotterdam/3drotterdam.png?raw=true)
 
 * Cliënten hebben interactie met gemeente via portalen (ruim te interpreteren: mijnrotterdam, apps, websites, e.d.). Dit geldt ook voor het bekijken en muteren van zaakinformatie (en documenten).
 
 * Als bron wordt in dit agile traject gebruik gemaakt van de e-Suite.
 In realiteit is er sprake van een ‘zs-dms complex’ ipv een enkelvoudige bron. In het verleden zijn meerdere, op zichzelf staande, ZRC’s en DRC’s ontstaan. Soms in de taakapplicaties zelf. Beoogd wordt uiteindelijk alle zaken (zaakinformatie en zaakdossiers) onder te brengen binnen een enkelvoudige bron.
 
-![datenwat](https://github.com/VNG-Realisatie/gemma-zaken/docs/processen/bestanden/rotterdam/datenwat.png)
+![datenwat](./bestanden/rotterdam/datenwat.png?raw=true)
 
-![informatieburgers](https://github.com/VNG-Realisatie/gemma-zaken/docs/processen/bestanden/rotterdam/informatieburgers.png)
+![informatieburgers](./bestanden/rotterdam/informatieburgers.png?raw=true)
 
 * Soms heeft de e-Suite zelf ook ‘de rol van taakapplicatie’ voor de afhandeling van processen die volledig in de e-Suite zijn vormgegeven (zaakafhandelcomponent).
 
 ## Architectuurschets
 
-![architectuurschetsrotterdam](https://github.com/VNG-Realisatie/gemma-zaken/docs/processen/bestanden/rotterdam/architectuurschetsrotterdam.png)
+![architectuurschetsrotterdam](/bestanden/rotterdam/architectuurschetsrotterdam.png?raw=true)
 
 Professionals (intern en van ketenpartners) en cliënten (burgers en bedrijven) maken gebruik van de samenloopfunctionaliteit geleverd door een specifieke app, applicatie of website. Omdat samenloop gaat over vanuit doelbinding relevante zaken wordt in de toepassing (app, applicatie of website) zelf invulling gegeven aan ‘relevante’. De kennis die nodig is om – bijvoorbeeld - te bepalen wie onderdeel uitmaakt van het gezin, of welke objecten in een gebied bij elkaar horen, bevindt zich dus aan de zijde van de toepassing. De toepassing geeft betreffende kennis mee in de zoekvraag richting de ZDS 2.0 interfaces, welke gerealiseerd worden door de ZRC, DRC en ZTC.
 
@@ -55,7 +55,7 @@ Professionals (intern en van ketenpartners) en cliënten (burgers en bedrijven) 
 
 1.	Client of professional voert het zoekgegeven in een toepassing in.
 2.	De toepassing geeft de ‘dat-informatie’ (= een lijst met zaaknummers en behandelaars) terug.
-3.	In geval de autorisatie (bepaald op zaaktype adhv doelbinding, classificatie en toegepast voor rol/functie) dit toestaat, wordt, na doorklikken op een zaaknummer, inzage verkregen in de ‘wat-informatie’ (detailinformatie en zaakdocumenten (indien vertrouwelijkheidsbepaling dit niet beperkt)). 
+3.	In geval de autorisatie (bepaald op zaaktype adhv doelbinding, classificatie en toegepast voor rol/functie) dit toestaat, wordt, na doorklikken op een zaaknummer, inzage verkregen in de ‘wat-informatie’ (detailinformatie en zaakdocumenten (indien vertrouwelijkheidsbepaling dit niet beperkt)).
 
 ## Generieke architectuurschets (GEMMA-referentiecomponenten)
 
